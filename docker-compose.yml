@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  nids:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nids-cyberdefend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_NAME=NIDS CyberDefend
+      - SECRET_KEY=nids-production-jwt-secret-key-32chars-min-2026
+      - DATABASE_URL=sqlite:///./nids.db
+      - DEFAULT_ADMIN_USERNAME=admin
+      - DEFAULT_ADMIN_PASSWORD=CyberDefense2026!
+      - DEFAULT_ANALYST_USERNAME=analyst
+      - DEFAULT_ANALYST_PASSWORD=Analyst2026!
+    volumes:
+      - nids-storage:/app/backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  nids-storage:
+    driver: local
